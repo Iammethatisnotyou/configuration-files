@@ -1,3 +1,5 @@
+require("keybinds")
+
 -- Initialize packer.nvim if not already loaded
 vim.cmd [[packadd packer.nvim]]
 
@@ -11,7 +13,64 @@ end
 packer.startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
+  
+  use "folke/todo-comments.nvim"
+  use "mg979/vim-visual-multi"
+  use 'dhruvasagar/vim-table-mode'
+  use 'rgarber11/jsregexp_windows_prebuilt'
 
+use {
+  'nvim-lualine/lualine.nvim',
+  requires = { 'nvim-tree/nvim-web-devicons' }
+}
+
+-- Basic Lualine setup
+require('lualine').setup({
+  options = {
+    theme = 'tokyonight',  -- Choose your preferred theme (gruvbox, nord, etc.)
+    icons_enabled = true,  -- Enable icons in the status line
+    component_separators = '|',
+    section_separators = '',
+  },
+  sections = {
+    lualine_a = {'mode'},  -- Left side - mode (Normal, Insert, etc.)
+    lualine_c = {'filename'},  -- Current file name
+    lualine_x = {'encoding', 'filetype'},  -- Encoding and file type
+    lualine_y = {'progress'},  -- File progress
+    lualine_z = {'location'},  -- Line and column number  'filetype'},  -- Encoding and file type
+  },
+})
+
+use {
+  "karb94/neoscroll.nvim",
+  config = function()
+    require("neoscroll").setup()
+  end
+}
+
+use {
+  'NvChad/nvim-colorizer.lua',
+  config = function()
+    require('colorizer').setup({
+      filetypes = { "*" }, -- Enable for all filetypes
+      user_default_options = {
+        RGB = true,          -- #RGB hex codes
+        RRGGBB = true,       -- #RRGGBB hex codes
+        names = false,       -- Disable "name" codes like Blue or Gray
+        RRGGBBAA = true,    -- #RRGGBBAA hex codes
+        AARRGGBB = true,    -- 0xAARRGGBB hex codes
+        rgb_fn = true,       -- CSS rgb() and rgba() functions
+        hsl_fn = false,      -- Disable hsl() and hsla()
+        css = true,         -- Disable CSS color features
+        css_fn = true,      -- Disable CSS functions
+        mode = "background", -- Display the hex code background in color
+        virtualtext = "■",   -- Show a colored box next to the hex code
+        always_update = false,
+      },
+      buftypes = {},
+    })
+  end
+}
   -- Add nvim-autopairs for auto-pairing brackets, parentheses, etc.
   use {
 	'windwp/nvim-autopairs',
@@ -91,6 +150,7 @@ require('nvim-autopairs').setup{}
 vim.g.mapleader = " "  -- Sets the leader key to space
 
 --Use Dvorak-like keybindings
+vim.api.nvim_set_keymap("v", "e", "d", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "t", "k", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "n", "j", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "s", "l", { noremap = true, silent = true })
@@ -105,22 +165,31 @@ vim.api.nvim_set_keymap("v", "o", "$", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", ".", "w", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", ",", "b", { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap('n', 'l', 'p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'p', 'r', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'q', 'x', { noremap = true, silent = true })
 --indents single press
-vim.api.nvim_set_keymap('n', '<', '<<', { noremap = true })
-vim.api.nvim_set_keymap('n', '>', '>>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<', '<<', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '>', '>>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', 'T', 'n', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('v', 'N', 'N', {noremap = true, silent = true})
 
 -- Map 'Ctrl+v' to paste from system clipboard in visual or insert
 vim.api.nvim_set_keymap('i', '<C-v>', '<C-r>+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<C-v>', '"+p', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap("n", "ee", ":lua delete_line()<CR>", { noremap = true, silent = true })
-
 --Control backspace
 vim.api.nvim_set_keymap('i', '<C-BS>', '<C-w>', { noremap = true, silent = true })
 
 -- Map 'Ctrl+v' to paste from system clipboard in visual or insert
 vim.api.nvim_set_keymap('i', '<C-v>', '<C-r>+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<C-v>', '"+p', { noremap = true, silent = true })
+
+-- Map '\' to :noh (clear search highlights)
+vim.keymap.set('n', '\\', '<Cmd>nohlsearch|diffupdate|normal! <C-l><CR>', { silent = true })
+--vim.keymap.set('n', '\\', ':noh<CR>', { silent = true })
 
 -- Control backspace to delete current line
 function delete_line()
@@ -170,6 +239,7 @@ function toggle_zen()
 end
 
 vim.api.nvim_set_keymap('n', '<leader>z', ':lua toggle_zen()<CR>', { noremap = true, silent = true })
+vim.api.nvim_create_user_command('W', 'write', {})
 
 -- Define commands to toggle Zen mode
 vim.cmd('command! Zen lua zen()')
@@ -198,6 +268,23 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.incsearch = true
 
+vim.opt.termguicolors = true
+
 vim.o.completeopt = "menuone,noselect" -- Better completion experience
 
-vim.o.mouse = 'a'
+vim.defer_fn(function() -- Make background transparent
+    vim.cmd("highlight Normal ctermbg=NONE guibg=NONE")
+end, 0)
+
+vim.g.netrw_banner = 0 -- Disable the top banner
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "netrw",
+    callback = function()
+        -- Remap keys
+        vim.api.nvim_buf_set_keymap(0, "n", "n", "j", { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(0, "n", "t", "k", { noremap = true, silent = true })
+    end,
+})
+
+
+vim.o.mouse = ""
