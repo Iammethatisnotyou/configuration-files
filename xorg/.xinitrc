@@ -10,11 +10,10 @@ feh --bg-scale "$background"
 picom &
 xrdb -merge ~/.Xresources
 xsetroot -cursor_name left_ptr
-# dwmblocks &
 xset r rate 200 50 &
 
+# dwmblocks &
 # exec dwm
-#exec ~/programs/c-cpp/window_manager/comp_wm
 
 polybar &
 sxwm
