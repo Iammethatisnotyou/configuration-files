@@ -2,7 +2,7 @@ Programs I use
 
 nvim
 st
-firefox
+firefox with user.js
 fastfetch
 flameshot
 dwm with dwmblocks
