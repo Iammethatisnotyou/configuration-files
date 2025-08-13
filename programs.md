@@ -10,3 +10,6 @@ sxwm with polybar
 dmenu
 btop
 picom
+qalc
+ffmpeg and obs
+nsxiv and feh
