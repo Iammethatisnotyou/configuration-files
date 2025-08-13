@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Desired resolution and refresh rate
 DESIRED_RES="1920x1080"
@@ -13,7 +13,7 @@ for monitor in $CONNECTED_MONITORS; do
     MONITOR_NAME=$(echo $monitor | awk -F' ' '{print $1}')
 
     # Check if the monitor is not the laptop screen (eDP1)
-    if [[ "$MONITOR_NAME" != "eDP1" ]]; then
+    if [ "$MONITOR_NAME" != "eDP1" ]; then
         echo "External monitor $MONITOR_NAME detected."
 
         # Turn off the laptop screen

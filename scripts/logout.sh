@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Define the options
 options="Shutdown\nReboot\nCancel"

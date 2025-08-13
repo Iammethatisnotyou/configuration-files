@@ -1,6 +1,4 @@
-#!/bin/bash
-
-#!/bin/bash
+#!/bin/sh
 
 # Get battery capacity and status
 CAPACITY=$(cat /sys/class/power_supply/BAT0/capacity)

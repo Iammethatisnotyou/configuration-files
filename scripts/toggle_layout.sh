@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Get the current layout and variant directly from setxkbmap query
 current_layout=$(setxkbmap -query | grep 'layout:' | awk '{print $2}')

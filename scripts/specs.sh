@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 echo '==Uptime=='
 uptime | awk -F'up |:' '{print $2 ":" $3}' | sed 's/,//'
 echo '==Space=='

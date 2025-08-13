@@ -1,18 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
-# Directory containing your wallpapers
-WALLPAPER_DIR=~/Pictures/Backgrounds
+WALLPAPER_DIR="$HOME/Pictures/Backgrounds"
+WALLPAPER_FILE="$HOME/programs/scripts/current_background.txt"
 
-# Use rofi to select an image file
-SELECTED=$(ls "$WALLPAPER_DIR" | rofi -dmenu -p "Select Wallpaper:")
+# Select a wallpaper using dmenu
+SELECTED=$(ls "$WALLPAPER_DIR" | dmenu -p "Select Wallpaper:")
 
-# Check if a file was selected
+# Set the wallpaper if one was picked
 if [ -n "$SELECTED" ]; then
-    # Apply the selected wallpaper to all screens
-    for SCREEN in $(grep 'image-path' | awk -F/ '{print $4"/"$5}'); do
-        xfconf-query -c "/backdrop/$SCREEN/image-path" -s "$WALLPAPER_DIR/$SELECTED" -T
-        xfconf-query -c "/backdrop/$SCREEN/image-style" -s 1 -T  # 1 for 'Fill'
-    done
+    feh --bg-scale "$WALLPAPER_DIR/$SELECTED"
+    echo "$WALLPAPER_DIR/$SELECTED" > $WALLPAPER_FILE
 else
     echo "No file selected."
 fi
